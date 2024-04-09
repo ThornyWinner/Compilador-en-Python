@@ -34,6 +34,7 @@ t_DOT = r'\.'
 t_UPDATE = r':='
 
 # Definir un diccionario para almacenar los números de token asignados a cada lexema
+# Alterando unicamente los operadores y operandos del diccionario funciona pero es mala práctica
 lexeme_to_token = {
     'BEGIN': 1,
     'END': 2,
@@ -50,23 +51,23 @@ lexeme_to_token = {
     'ELSE': 13,
     'ID': 14,
     'NUMBER': 15,
-    'PLUS': 16,
-    'MINUS': 17,
-    'TIMES': 18,
-    'DIVIDE': 19,
+    '+': 16,
+    '-': 17,
+    '*': 18,
+    '/': 19,
     'ODD': 20,
-    'ASSIGN': 21,
-    'NE': 22,
-    'LT': 23,
-    'LTE': 24,
-    'GT': 25,
-    'GTE': 26,
-    'LPARENT': 27,
-    'RPARENT': 28,
-    'COMMA': 29,
-    'SEMICOLON': 30,
-    'DOT': 31,
-    'UPDATE': 32,
+    '=': 21,
+    '<>': 22,
+    '<': 23,
+    '<=': 24,
+    '>': 25,
+    '>=': 26,
+    '(': 27,
+    ')': 28,
+    ',': 29,
+    ';': 30,
+    '.': 31,
+    ':=': 32,
 }
 
 def t_ID(t):
@@ -140,7 +141,10 @@ token_list = []
 
 # Tokenize
 for token in analizador:
-    token_list.append((lexeme_to_token.get(token.value, 14), token.lineno, token.lexpos, token.type, token.value))
+    token_value = lexeme_to_token.get(token.value)
+    if token_value is None:
+        print(f"Token desconocido: {token}")
+    token_list.append((token_value, token.lineno, token.lexpos, token.type, token.value))
 
 # Imprimir en forma de tabla
 print(tabulate(token_list, headers=["Número de token", "Línea", "Columna", "Tipo de token", "Lexema"]))
