@@ -70,6 +70,7 @@ lexeme_to_token = {
     ':=': 32,
 }
 
+#Corregir t_ID y t_NUMBER para agregarlos en el diccionario de tokens puedes checarlo xfa Diego? tqm
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value.upper() in reservadas:
