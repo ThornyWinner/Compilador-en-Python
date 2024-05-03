@@ -51,26 +51,27 @@ lexeme_to_token = {
     'ELSE': 13,
     'ID': 14,
     'NUMBER': 15,
-    '+': 16,
-    '-': 17,
-    '*': 18,
-    '/': 19,
+    'PLUS': 16,
+    'MINUS': 17,
+    'TIMES': 18,
+    'DIVIDE': 19,
     'ODD': 20,
-    '=': 21,
-    '<>': 22,
-    '<': 23,
-    '<=': 24,
-    '>': 25,
-    '>=': 26,
-    '(': 27,
-    ')': 28,
-    ',': 29,
-    ';': 30,
-    '.': 31,
-    ':=': 32,
+    'ASSIGN': 21,
+    'NE': 22,
+    'LT': 23,
+    'LTE': 24,
+    'GT': 25,
+    'GTE': 26,
+    'LPARENT': 27,
+    'RPARENT': 28,
+    'COMMA': 29,
+    'SEMICOLON': 30,
+    'DOT': 31,
+    'UPDATE': 32,
 }
 
 #Corregir t_ID y t_NUMBER para agregarlos en el diccionario de tokens puedes checarlo xfa Diego? tqm
+# Funciona asignando un valor predeterminado ya sea al ID o al NUMBER (14 y 15 respectivamente) debe ir en el fragmento de tokenize?
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value.upper() in reservadas:
@@ -78,6 +79,7 @@ def t_ID(t):
         t.type = t.value
     else:
         t.type = 'ID'
+        t.value = t.value  # Mantiene el valor del identificador
     return t
 
 def t_NUMBER(t):
@@ -138,14 +140,26 @@ analizador = lex.lex()
 analizador.input(cadena)
 
 # Lista para almacenar los tokens
+#token_list = []
+
+# Tokenize sin 14 y 15
+#for token in analizador:
+#   token_value = lexeme_to_token.get(token.value,None)
+#  if token_value is None:
+#     print(f"Token desconocido: {token}")
+    #token_list.append((token_value, token.lineno, token.lexpos, token.type, token.value))
+
 token_list = []
 
-# Tokenize
+# Tokenize con 14 y 15
 for token in analizador:
-    token_value = lexeme_to_token.get(token.value)
+    print(f"Token: {token.type}, Valor: {token.value}")  # Debug
+    token_type = token.type
+    token_value = lexeme_to_token.get(token_type, None)
     if token_value is None:
-        print(f"Token desconocido: {token}")
-    token_list.append((token_value, token.lineno, token.lexpos, token.type, token.value))
+        print(f"Token desconocido: {token}\n")
+    else:
+        token_list.append((token_value, token.lineno, token.lexpos, token.type, token.value))
 
 # Imprimir en forma de tabla
 print(tabulate(token_list, headers=["Número de token", "Línea", "Columna", "Tipo de token", "Lexema"]))
