@@ -6,10 +6,10 @@ import sys
 from tabulate import tabulate
 
 reservadas = ['BEGIN', 'END', 'IF', 'THEN', 'WHILE', 'DO', 'CALL', 'CONST',
-            'VAR', 'PROCEDURE', 'OUT', 'IN', 'ELSE']
+            'VAR', 'PROCEDURE', 'OUT', 'IN', 'ELSE', 'ODD']
 
-tokens = reservadas + ['ID', 'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
-                        'ODD', 'ASSIGN', 'NE', 'LT', 'LTE', 'GT', 'GTE',
+tokens = reservadas + ['ID', 'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 
+                        'ASSIGN', 'NE', 'LT', 'LTE', 'GT', 'GTE',
                         'LPARENT', 'RPARENT', 'COMMA', 'SEMICOLON',
                         'DOT', 'UPDATE'
                         ]
@@ -34,7 +34,6 @@ t_DOT = r'\.'
 t_UPDATE = r':='
 
 # Definir un diccionario para almacenar los números de token asignados a cada lexema
-# Alterando unicamente los operadores y operandos del diccionario funciona pero es mala práctica
 lexeme_to_token = {
     'BEGIN': 1,
     'END': 2,
@@ -70,8 +69,6 @@ lexeme_to_token = {
     'UPDATE': 32,
 }
 
-#Corregir t_ID y t_NUMBER para agregarlos en el diccionario de tokens puedes checarlo xfa Diego? tqm
-# Funciona asignando un valor predeterminado ya sea al ID o al NUMBER (14 y 15 respectivamente) debe ir en el fragmento de tokenize?
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value.upper() in reservadas:
@@ -139,21 +136,10 @@ analizador = lex.lex()
 
 analizador.input(cadena)
 
-# Lista para almacenar los tokens
-#token_list = []
-
-# Tokenize sin 14 y 15
-#for token in analizador:
-#   token_value = lexeme_to_token.get(token.value,None)
-#  if token_value is None:
-#     print(f"Token desconocido: {token}")
-    #token_list.append((token_value, token.lineno, token.lexpos, token.type, token.value))
-
 token_list = []
 
-# Tokenize con 14 y 15
+# Tokenize
 for token in analizador:
-    print(f"Token: {token.type}, Valor: {token.value}")  # Debug
     token_type = token.type
     token_value = lexeme_to_token.get(token_type, None)
     if token_value is None:
