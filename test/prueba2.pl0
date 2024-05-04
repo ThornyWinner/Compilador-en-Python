@@ -1,10 +1,8 @@
-BEGIN
-  a := x;
-  b := y;
-  z := 0;
-  WHILE b > 0 DO BEGIN
-    IF ODD b THEN z := z + a;
-    a := 2 * a;
-    b := b / 2
-  END
-END;
+VAR f, n;
+PROCEDURE fact;
+	BEGIN
+		n:= n-1;
+		IF n = 0 THEN f := 1;
+		IF n > 0 THEN CALL fact;
+		f:=f*ans1;
+	END;

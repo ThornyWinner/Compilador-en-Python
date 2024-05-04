@@ -1,3 +1,4 @@
+BEGIN
  x := m;
  y := n;
  CALL multiply;
@@ -7,3 +8,4 @@
  x := 84;
  y := 36;
  CALL gcd
+END
