@@ -100,6 +100,9 @@ def t_error(t):
 # Crear el analizador léxico
 analizador = lex.lex()
 
+
+#A PARTIR DE AQUI SE PERMITE VISUALIZAR LA TABLA DE TOKENS POR MEDIO DE LA SELECCIÓN DE UN ARCHIVO DE PRUEBA con la función buscarFicheros
+
 # Selección de archivo de lenguaje de prueba
 #def buscarFicheros(directorio):
 #    ficheros = []

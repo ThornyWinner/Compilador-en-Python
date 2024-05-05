@@ -1,12 +1,14 @@
 import ply.yacc as yacc
 import os
 import codecs
-import re
 from analizadorLexico import tokens
-from sys import stdin
+import re
 
-# Precedencia de operadores
+# Corregir precedencias y nombres de tokens
 precedence = (
+    ('right', 'ID', 'CALL', 'BEGIN', 'IF', 'WHILE'),
+    ('right', 'PROCEDURE'),
+    ('right', 'VAR'),
     ('right', 'ASSIGN'),
     ('right', 'UPDATE'),
     ('left', 'NE'),
@@ -17,18 +19,22 @@ precedence = (
     ('left', 'LPARENT', 'RPARENT'),
 )
 
-# Definición de la gramática
+# Corregir sintaxis de impresión para Python 3
 def p_program(p):
     '''program : block'''
     print("program")
 
 def p_block(p):
-    '''block : constDecl varDecl statementList'''
+    '''block : constDecl varDecl procDecl statement'''
     print("block")
 
 def p_constDecl(p):
-    '''constDecl : CONST constAssignmentList SEMICOLON'''
+    '''constDecl : CONST constAssignmentList SEMICOLON'''  # Corregir error tipográfico
     print("constDecl")
+
+def p_constDeclEmpty(p):
+    '''constDecl : empty'''
+    print("nulo")
 
 def p_constAssignmentList1(p):
     '''constAssignmentList : ID ASSIGN NUMBER'''
@@ -38,9 +44,13 @@ def p_constAssignmentList2(p):
     '''constAssignmentList : constAssignmentList COMMA ID ASSIGN NUMBER'''
     print("constAssignmentList 2")
 
-def p_varDecl(p):
+def p_varDecl1(p):
     '''varDecl : VAR identList SEMICOLON'''
-    print("varDecl")
+    print("varDecl 1")
+
+def p_varDeclEmpty(p):
+    '''varDecl : empty'''
+    print("nulo")
 
 def p_identList1(p):
     '''identList : ID'''
@@ -50,10 +60,13 @@ def p_identList2(p):
     '''identList : identList COMMA ID'''
     print("identList 2")
 
-# Regla para 'procDecl' corregida para evitar errores de recursión
-def p_procDecl(p):
-    '''procDecl : PROCEDURE ID SEMICOLON statementList SEMICOLON'''
-    print("procDecl")
+def p_procDecl1(p):
+    '''procDecl : procDecl PROCEDURE ID SEMICOLON block SEMICOLON'''
+    print("procDecl 1")
+
+def p_procDeclEmpty(p):
+    '''procDecl : empty'''
+    print("nulo")
 
 def p_statement1(p):
     '''statement : ID UPDATE expression'''
@@ -74,6 +87,10 @@ def p_statement4(p):
 def p_statement5(p):
     '''statement : WHILE condition DO statement'''
     print("statement 5")
+
+def p_statementEmpty(p):
+    '''statement : empty'''
+    print("nulo")
 
 def p_statementList1(p):
     '''statementList : statement'''
@@ -120,8 +137,12 @@ def p_expression1(p):
     print("expresion 1")
 
 def p_expression2(p):
-    '''expression : expression addingOperator term'''
+    '''expression : addingOperator term'''
     print("expresion 2")
+
+def p_expression3(p):
+    '''expression : expression addingOperator term'''
+    print("expresion 3")
 
 def p_addingOperator1(p):
     '''addingOperator : PLUS'''
@@ -129,7 +150,7 @@ def p_addingOperator1(p):
 
 def p_addingOperator2(p):
     '''addingOperator : MINUS'''
-    print("addingOperator 2")
+    print("addingOperator 2")  # Corregir error tipográfico
 
 def p_term1(p):
     '''term : factor'''
@@ -157,17 +178,17 @@ def p_factor2(p):
 
 def p_factor3(p):
     '''factor : LPARENT expression RPARENT'''
-    print("factor 3")
+
+def p_empty(p):
+    '''empty :'''
+    pass
 
 def p_error(p):
-    print("error de sintaxis", p)
     if p:
-        print("Error en línea " + str(p.lineno))
+        print("Error de sintaxis ", p)
     else:
-        print("Error sintáctico: token desconocido")
+        print("Error de sintaxis: elemento inesperado")
 
-# Código para seleccionar archivo de test
-# Selección de archivo de lenguaje de prueba
 def buscarFicheros(directorio):
     ficheros = []
     numArchivo = ''
@@ -192,7 +213,6 @@ def buscarFicheros(directorio):
 
     return files[int(numArchivo) - 1]
 
-# Uso del parser
 directorio = '/Users/hecto/OneDrive/Escritorio/ITS/8vo Semestre/(11-12) Lenguajes y Autómatas II/Compilador en Python/test/'
 archivo = buscarFicheros(directorio)
 test = directorio + archivo
@@ -203,4 +223,4 @@ fp.close()
 parser = yacc.yacc()
 result = parser.parse(cadena)
 
-print(result)
+print("Resultado:", result)
